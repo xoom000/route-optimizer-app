@@ -1,8 +1,43 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Route Optimizer App
 
-# Getting Started
+A React Native application for field service route optimization with Google Maps integration.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+## Features
+
+- 🗺️ Google Maps integration with numbered markers
+- 📍 Customer location management with MEGA DATABASE
+- 🚚 Route optimization for daily deliveries
+- 📱 Native performance on Android and iOS
+- 🔍 Search and filter customers by day
+
+## Architecture
+
+Built with React Native CLI (not Expo) for maximum native module compatibility and performance.
+
+### Key Components
+
+- `GoogleMapsView`: Native Google Maps implementation
+- `CustomerMarker`: Numbered markers with InfoWindows
+- `DatabaseManager`: Singleton service for customer data
+- `MapScreen`: Main interface with search and filtering
+
+## Cloud Build Setup (GitHub Actions)
+
+This project is configured for automatic cloud builds since Android SDK build tools require x86-64 architecture.
+
+### Setup GitHub Repository
+
+1. Create a new repository on GitHub
+2. Add your Google Maps API key to GitHub Secrets:
+   - Go to Settings → Secrets and variables → Actions
+   - Add `GOOGLE_MAPS_API_KEY` with your API key value
+3. Push this code to trigger automatic builds
+
+### Environment Setup
+
+1. Copy `.env.example` to `.env`
+2. Add your Google Maps API key to `.env`
+3. The GitHub Actions workflow will handle the rest
 
 ## Step 1: Start Metro
 

@@ -1,27 +1,55 @@
 /**
- * Sample React Native App
- * https://github.com/facebook/react-native
+ * Route Optimizer App - React Native
+ * Direct Google Maps Integration with MEGA DATABASE
  *
  * @format
  */
 
-import { NewAppScreen } from '@react-native/new-app-screen';
-import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
+import React from 'react';
+import { StatusBar, StyleSheet, SafeAreaView } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import MapScreen from './src/screens/MapScreen';
+import { COLORS } from './src/utils/constants';
+
+const Tab = createBottomTabNavigator();
 
 function App() {
-  const isDarkMode = useColorScheme() === 'dark';
-
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <NewAppScreen templateFileName="App.tsx" />
-    </View>
+    <SafeAreaView style={styles.container}>
+      <NavigationContainer>
+        <Tab.Navigator
+          screenOptions={{
+            tabBarActiveTintColor: COLORS.primary,
+            tabBarInactiveTintColor: COLORS.dark,
+            headerStyle: {
+              backgroundColor: COLORS.primary,
+            },
+            headerTintColor: COLORS.white,
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
+          }}
+        >
+          <Tab.Screen 
+            name="Map" 
+            component={MapScreen}
+            options={{
+              title: 'Route Optimizer',
+              tabBarLabel: 'Map',
+            }}
+          />
+        </Tab.Navigator>
+      </NavigationContainer>
+      <StatusBar barStyle="light-content" />
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: COLORS.white,
   },
 });
 

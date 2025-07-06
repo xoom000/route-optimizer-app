@@ -1,0 +1,85 @@
+name: Build React Native App
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+    
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v2
+    
+    - name: Create local.properties
+      run: |
+        echo "sdk.dir=$ANDROID_SDK_ROOT" > android/local.properties
+        echo "GOOGLE_MAPS_API_KEY=${{ secrets.GOOGLE_MAPS_API_KEY }}" > .env
+    
+    - name: Grant execute permission for gradlew
+      run: chmod +x android/gradlew
+    
+    - name: Build Android Release
+      run: |
+        cd android
+        ./gradlew assembleRelease --no-daemon
+      env:
+        GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
+    
+    - name: Upload APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: app-release
+        path: android/app/build/outputs/apk/release/app-release.apk
+
+  build-ios:
+    runs-on: macos-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Install pods
+      run: |
+        cd ios
+        pod install
+    
+    - name: Build iOS
+      run: |
+        cd ios
+        xcodebuild -workspace RouteOptimizerApp.xcworkspace \
+                   -scheme RouteOptimizerApp \
+                   -configuration Release \
+                   -sdk iphonesimulator \
+                   -destination 'platform=iOS Simulator,name=iPhone 14' \
+                   build
+      env:
+        GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
