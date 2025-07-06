@@ -25,6 +25,8 @@ Built with React Native CLI (not Expo) for maximum native module compatibility a
 
 This project is configured for automatic cloud builds since Android SDK build tools require x86-64 architecture.
 
+**Build Status**: Ready for cloud builds! 🚀
+
 ### Setup GitHub Repository
 
 1. Create a new repository on GitHub
