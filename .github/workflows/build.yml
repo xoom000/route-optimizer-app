@@ -30,8 +30,18 @@ jobs:
     
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
+      with:
+        cmdline-tools-version: 11076708
+        packages: |
+          platform-tools
+          platforms;android-34
+          build-tools;34.0.0
+          ndk;25.1.8937393
     
-    - name: Create local.properties
+    - name: Accept Android SDK licenses
+      run: yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --licenses
+    
+    - name: Create environment and config files
       run: |
         echo "sdk.dir=$ANDROID_SDK_ROOT" > android/local.properties
         echo "GOOGLE_MAPS_API_KEY=${{ secrets.GOOGLE_MAPS_API_KEY }}" > .env
@@ -39,18 +49,22 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x android/gradlew
     
-    - name: Build Android Release
+    - name: Clean build
+      run: ./android/gradlew -p android clean
+    
+    - name: Build Android Release APK
       run: |
-        cd android
-        ./gradlew assembleRelease --no-daemon
+        ./android/gradlew -p android assembleRelease --no-daemon --stacktrace
       env:
+        ANDROID_HOME: ${{ env.ANDROID_SDK_ROOT }}
         GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
     
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
-        name: app-release
+        name: route-optimizer-release-apk
         path: android/app/build/outputs/apk/release/app-release.apk
+        retention-days: 30
 
   build-ios:
     runs-on: macos-latest
